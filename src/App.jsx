@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-// ── TRANSLATIONS ──────────────────────────────────────────────────────────────
 const T = {
   ja: {
     nav: ["事業内容", "トレーナー", "料金プラン", "アクセス", "お問い合わせ"],
@@ -12,13 +11,18 @@ const T = {
     stats: [
       { num: "1対1", label: "完全マンツーマン指導" },
       { num: "0円", label: "入会金・事務手数料" },
-      { num: "8年+", label: "トレーナー経験" },
-      { num: "200+", label: "お客様の実績" },
+      { num: "完全", label: "個室プライベート空間" },
+      { num: "神戸", label: "駅から徒歩4分" },
     ],
     about_label: "私たちについて",
     about_h2: "10.31 合同会社とは",
     about_p1: "10月31日——ハロウィンの日——に設立された私たちは、「変身」を信じています。コスチュームで一夜だけ別人になるのではなく、トレーニングを通じて本当の自分に変わること。それが私たちのミッションです。",
     about_p2: "神戸で完全個室のパーソナルトレーニングジムを運営し、お客様一人ひとりに最適化された指導を提供しています。",
+    trainer_label: "トレーナー",
+    trainer_h2: "トレーナー紹介",
+    trainer_name: "BATTUR DASHNYAM",
+    trainer_role: "パーソナルトレーナー・代表",
+    trainer_msg: "身体を変えることで人生が変わると信じています。お客様一人ひとりに寄り添い、目標達成まで全力でサポートします。まずはお気軽にご相談ください。",
     service_label: "サービス",
     service_h2: "提供内容",
     services: [
@@ -31,18 +35,17 @@ const T = {
     plan_h2: "コース詳細",
     plan_note: "入会金 0円 ／ 事務手数料 0円",
     plans: [
-      { name: "トライアル", sessions: "4回", price: "¥29,700", tax: "税込", tag: null },
-      { name: "スタンダード", sessions: "8回", price: "¥57,200", tax: "税込", tag: "人気" },
-      { name: "コミット", sessions: "16回", price: "¥110,000", tax: "税込", tag: null },
+      { name: "初回体験", sessions: "カウンセリング", price: "無料", tax: "", tag: null },
+      { name: "体験トレーニング", sessions: "1回 75分", price: "¥2,000", tax: "税別", tag: "初回限定" },
+      { name: "月10回コース", sessions: "1ヶ月", price: "¥55,000", tax: "税込", tag: "人気" },
+      { name: "月12回コース", sessions: "1ヶ月", price: "¥60,000", tax: "税込", tag: null },
     ],
-    campaign_title: "初回限定キャンペーン",
-    campaign_items: ["初回カウンセリング 無料", "体験トレーニング（75分）¥2,000（税別）"],
     flow_label: "ご利用の流れ",
     flow_h2: "お申し込みから開始まで",
     flows: [
       { title: "お問い合わせ", desc: "フォーム・LINE・お電話にてご連絡ください。" },
-      { title: "カウンセリング", desc: "現在のお悩みや目標をヒアリングします。料金・内容のご説明も行います。" },
-      { title: "体験トレーニング", desc: "体組成測定後、実際のパーソナルトレーニングを体験いただきます（75分）。" },
+      { title: "カウンセリング（無料）", desc: "現在のお悩みや目標をヒアリングします。料金・内容のご説明も行います。" },
+      { title: "体験トレーニング", desc: "体組成測定後、実際のパーソナルトレーニングを体験いただきます（75分・¥2,000税別）。" },
       { title: "プラン決定・開始", desc: "体験後のフィードバックをもとに最適なプランをご提案。すぐに開始できます。" },
     ],
     access_label: "アクセス",
@@ -52,13 +55,13 @@ const T = {
       { label: "アクセス", value: "JR神戸駅 徒歩4分 ／ 高速神戸駅（阪神・阪急）徒歩3分" },
       { label: "営業時間", value: "7:00 〜 22:00（予約制）" },
       { label: "定休日", value: "不定休" },
-      { label: "電話", value: "078-XXX-XXXX" },
+      { label: "電話", value: "090-8738-9899" },
     ],
     company_label: "会社概要",
     company: [
       { label: "会社名", value: "10.31 合同会社" },
-      { label: "設立", value: "2024年10月31日" },
-      { label: "代表社員", value: "代表者" },
+      { label: "設立", value: "2026年2月24日" },
+      { label: "代表社員", value: "BATTUR DASHNYAM" },
       { label: "所在地", value: "神戸市中央区多聞通4丁目1番11号 岡田ビル2F" },
       { label: "事業内容", value: "パーソナルトレーニングジムの運営" },
     ],
@@ -72,7 +75,6 @@ const T = {
     form_btn: "送信する",
     sent_title: "送信完了しました",
     sent_desc: "3営業日以内にご連絡いたします。",
-    footer_copy: "© 2024 10.31 合同会社 All rights reserved.",
     lang_toggle: "モンゴル語",
   },
   mn: {
@@ -85,37 +87,41 @@ const T = {
     stats: [
       { num: "1:1", label: "Бүрэн хувийн сургалт" },
       { num: "0₮", label: "Элсэлтийн хураамж" },
-      { num: "8жил+", label: "Дасгалжуулагчийн туршлага" },
-      { num: "200+", label: "Амжилтанд хүрсэн үйлчлүүлэгч" },
+      { num: "Бүрэн", label: "Хувийн тусдаа өрөө" },
+      { num: "Кобе", label: "Станцаас явган 4 мин" },
     ],
     about_label: "Бидний тухай",
     about_h2: "10.31 合同会社 гэж юу вэ?",
     about_p1: "10-р сарын 31 — Хэллоуины өдөр — байгуулагдсан бид \"хувилгаан\"-д итгэдэг. Костюм өмсөж нэг шөнийн туршид өөр хүн болох биш — дасгалжуулалтаар жинхэнэ өөртөө болох. Энэ бол бидний эрхэм зорилго.",
     about_p2: "Кобе хотод бүрэн хувийн өрөөтэй хувийн дасгалжуулалтын клуб ажиллуулж, тус бүрийн үйлчлүүлэгчид тохирсон сургалт хийдэг.",
+    trainer_label: "Дасгалжуулагч",
+    trainer_h2: "Дасгалжуулагчийн танилцуулга",
+    trainer_name: "BATTUR DASHNYAM",
+    trainer_role: "Хувийн дасгалжуулагч · Төлөөлөгч",
+    trainer_msg: "Биеэ өөрчилснөөр амьдрал өөрчлөгдөнө гэдэгт итгэдэг. Тус бүрийн үйлчлүүлэгчид ойртож, зорилгод хүрэх хүртэл бүрэн дэмжлэг үзүүлнэ. Дургүйцэлгүй асуугаарай.",
     service_label: "Үйлчилгээ",
     service_h2: "Санал болгох зүйлс",
     services: [
       { icon: "◈", title: "Хувийн дасгалжуулалт", desc: "Таны зорилго, биеийн байдал, амьдралын хэв маягт тохирсон хувийн хөтөлбөр. Бүрэн хувийн өрөөнд тайвнаар дасгал хийнэ." },
-      { icon: "◉", title: "Хоол тэжээлийн зөвлөгөө", desc: "LINE-ээр хоол хүнсийг хянах дэмжлэг. Буцаж таргалахгүй идэх дадалыг хамтдаа бүтээнэ. Хатуу хязгаарлалтгүй, үргэлжлүүлж болох хоол." },
-      { icon: "◎", title: "Биеийн шинжилгээ", desc: "Орчин үеийн аппарат ашиглан биеийн байдлыг тоогоор илэрхийлнэ. Өөрчлөлтийг тоогоор мэдэрч урам зориг нэмэгдэнэ." },
+      { icon: "◉", title: "Хоол тэжээлийн зөвлөгөө", desc: "LINE-ээр хоол хүнсийг хянах дэмжлэг. Буцаж таргалахгүй идэх дадалыг хамтдаа бүтээнэ." },
+      { icon: "◎", title: "Биеийн шинжилгээ", desc: "Орчин үеийн аппарат ашиглан биеийн байдлыг тоогоор илэрхийлнэ. Өөрчлөлтийг мэдэрч урам зориг нэмэгдэнэ." },
       { icon: "◇", title: "Онлайн дэмжлэг", desc: "Дасгалгүй өдрүүдэд ч LINE-ээр асуулт хариулна. Өдөр тутмын жижиг асуудалд шуурхай хариу өгнө." },
     ],
     plan_label: "Үнийн мэдээлэл",
     plan_h2: "Хөтөлбөрийн дэлгэрэнгүй",
     plan_note: "Элсэлтийн хураамж 0₮ ／ Бүртгэлийн хураамж 0₮",
     plans: [
-      { name: "Туршилт", sessions: "4 удаа", price: "¥29,700", tax: "татвар орсон", tag: null },
-      { name: "Стандарт", sessions: "8 удаа", price: "¥57,200", tax: "татвар орсон", tag: "Алдартай" },
-      { name: "Коммит", sessions: "16 удаа", price: "¥110,000", tax: "татвар орсон", tag: null },
+      { name: "Анхны уулзалт", sessions: "Зөвлөгөө", price: "Үнэгүй", tax: "", tag: null },
+      { name: "Туршилтын сургалт", sessions: "1 удаа 75 мин", price: "¥2,000", tax: "татваргүй", tag: "Анхны удаа" },
+      { name: "Сарын 10 удаа", sessions: "1 сар", price: "¥55,000", tax: "татвар орсон", tag: "Алдартай" },
+      { name: "Сарын 12 удаа", sessions: "1 сар", price: "¥60,000", tax: "татвар орсон", tag: null },
     ],
-    campaign_title: "Анхны удаагийн хөнгөлөлт",
-    campaign_items: ["Анхны зөвлөгөө үнэгүй", "Туршилтын сургалт (75 мин) ¥2,000 (татваргүй)"],
     flow_label: "Дараалал",
     flow_h2: "Захиалгаас эхлэх хүртэл",
     flows: [
       { title: "Холбоо барих", desc: "Маягт, LINE, эсвэл утсаар холбоо барина уу." },
-      { title: "Зөвлөгөө", desc: "Одоогийн асуудал болон зорилгоо ярилцана. Үнэ болон агуулгын тайлбар хийнэ." },
-      { title: "Туршилтын сургалт", desc: "Биеийн шинжилгээний дараа жинхэнэ хувийн сургалтыг туршина (75 мин)." },
+      { title: "Зөвлөгөө (үнэгүй)", desc: "Одоогийн асуудал болон зорилгоо ярилцана. Үнэ болон агуулгын тайлбар хийнэ." },
+      { title: "Туршилтын сургалт", desc: "Биеийн шинжилгээний дараа жинхэнэ хувийн сургалтыг туршина (75 мин, ¥2,000 татваргүй)." },
       { title: "Хөтөлбөр тогтоох", desc: "Туршилтын дараа хамгийн тохирох хөтөлбөр санал болгоно. Шууд эхэлж болно." },
     ],
     access_label: "Хаяг",
@@ -125,13 +131,13 @@ const T = {
       { label: "Очих арга", value: "JR Кобе станцаас явган 4 мин / Высокоскоростной Кобе станцаас 3 мин" },
       { label: "Ажлын цаг", value: "7:00 〜 22:00 (урьдчилсан захиалгаар)" },
       { label: "Амрах өдөр", value: "Тогтмол бус" },
-      { label: "Утас", value: "078-XXX-XXXX" },
+      { label: "Утас", value: "090-8738-9899" },
     ],
     company_label: "Компанийн мэдээлэл",
     company: [
       { label: "Компанийн нэр", value: "10.31 合同会社" },
-      { label: "Байгуулагдсан", value: "2024 оны 10-р сарын 31" },
-      { label: "Төлөөлөгч", value: "Төлөөлөгч" },
+      { label: "Байгуулагдсан", value: "2026 оны 2-р сарын 24" },
+      { label: "Төлөөлөгч", value: "BATTUR DASHNYAM" },
       { label: "Хаяг", value: "Кобе хот, Чуо-ку, Тамонцу 4-1-11, Окада билдинг 2 давхар" },
       { label: "Үйл ажиллагаа", value: "Хувийн дасгалжуулалтын клубын үйл ажиллагаа" },
     ],
@@ -145,7 +151,6 @@ const T = {
     form_btn: "Илгээх",
     sent_title: "Амжилттай илгээгдлээ",
     sent_desc: "Ажлын 3 хоногт багтаан холбоо барина.",
-    footer_copy: "© 2024 10.31 合同会社 Бүх эрх хуулиар хамгаалагдсан.",
     lang_toggle: "日本語",
   },
 };
@@ -155,10 +160,11 @@ function scrollTo(id) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Base64 encoded trainer photo placeholder - will use URL
+const TRAINER_PHOTO = "/trainer.jpg";
+
 export default function Site1031() {
   const [lang, setLang] = useState("ja");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState(null);
   const [form, setForm] = useState({ name:"", email:"", tel:"", msg:"" });
   const [sent, setSent] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -171,7 +177,7 @@ export default function Site1031() {
     return ()=>window.removeEventListener("scroll",fn);
   },[]);
 
-  const accent = "#C8A96E"; // warm gold — distinctive, fitness luxury
+  const accent = "#C8A96E";
   const dark = "#0F1A0F";
   const mid = "#1E2E1E";
 
@@ -180,114 +186,71 @@ export default function Site1031() {
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0;}
         html{scroll-behavior:smooth;}
-        ::selection{background:${accent};color:#fff;}
         .nav-link{font-size:13px;letter-spacing:.08em;color:#333;cursor:pointer;padding:8px 14px;transition:color .2s;background:none;border:none;font-family:inherit;}
         .nav-link:hover{color:${accent};}
         .btn-primary{background:${accent};color:#fff;border:none;padding:14px 36px;font-size:14px;letter-spacing:.1em;cursor:pointer;font-family:inherit;font-weight:700;transition:opacity .2s;}
         .btn-primary:hover{opacity:.85;}
-        .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5);padding:13px 32px;font-size:13px;letter-spacing:.1em;cursor:pointer;font-family:inherit;font-weight:600;transition:border-color .2s,color .2s;}
-        .btn-ghost:hover{border-color:#fff;color:#fff;}
+        .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5);padding:13px 32px;font-size:13px;letter-spacing:.1em;cursor:pointer;font-family:inherit;font-weight:600;transition:border-color .2s;}
+        .btn-ghost:hover{border-color:#fff;}
         .section-eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:${accent};margin-bottom:14px;font-weight:600;}
         .section-h2{font-size:clamp(26px,3.5vw,40px);font-weight:900;letter-spacing:-.02em;line-height:1.2;margin-bottom:48px;}
-        .card{background:#f8f8f6;padding:36px 32px;}
         .form-row{width:100%;border:1px solid #ddd;padding:13px 16px;font-size:15px;font-family:inherit;outline:none;margin-bottom:16px;transition:border-color .2s;background:#fff;}
         .form-row:focus{border-color:${accent};}
         .plan-card{border:1px solid #e5e5e5;padding:44px 32px;text-align:center;position:relative;background:#fff;transition:border-color .3s,transform .3s;}
         .plan-card:hover{border-color:${accent};transform:translateY(-4px);}
         .plan-card.featured{border-color:${accent};border-width:2px;}
         .step-dot{width:48px;height:48px;border:2px solid ${accent};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:${accent};flex-shrink:0;}
-        .lang-btn{font-size:12px;letter-spacing:.08em;cursor:pointer;padding:6px 16px;border:1px solid rgba(255,255,255,.4);background:transparent;color:rgba(255,255,255,.85);font-family:inherit;transition:all .2s;}
+        .lang-btn{font-size:12px;cursor:pointer;padding:6px 16px;border:1px solid rgba(255,255,255,.4);background:transparent;color:rgba(255,255,255,.85);font-family:inherit;transition:all .2s;}
         .lang-btn:hover{border-color:#fff;color:#fff;}
         .lang-btn-dark{border-color:${accent};color:${accent};}
         .lang-btn-dark:hover{background:${accent};color:#fff;}
         .access-row{display:flex;gap:0;border-bottom:1px solid #eee;padding:16px 0;}
-        .access-label{width:140px;font-size:13px;color:#888;flex-shrink:0;padding-top:2px;}
+        .access-label{width:140px;font-size:13px;color:#888;flex-shrink:0;}
         .access-val{font-size:15px;color:#1a1a1a;flex:1;}
+        .qr-card{background:#fff;border:1px solid #eee;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
+        .qr-img{width:140px;height:140px;object-fit:contain;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
         .fadein{animation:fadeUp .8s ease forwards;}
         @media(max-width:640px){
-          .plan-grid{grid-template-columns:1fr!important;}
+          .plan-grid{grid-template-columns:1fr 1fr!important;}
           .service-grid{grid-template-columns:1fr!important;}
           .hero-btns{flex-direction:column!important;}
           .stat-grid{grid-template-columns:1fr 1fr!important;}
+          .about-grid{grid-template-columns:1fr!important;}
+          .trainer-inner{flex-direction:column!important;}
         }
       `}</style>
 
-      {/* ── NAV ── */}
-      <header style={{
-        position:"fixed",top:0,left:0,right:0,zIndex:100,
-        background: scrolled ? "rgba(255,255,255,.97)" : "transparent",
-        borderBottom: scrolled ? "1px solid #eee" : "none",
-        boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,.06)" : "none",
-        transition:"all .3s"
-      }}>
+      {/* NAV */}
+      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:100,background:scrolled?"rgba(255,255,255,.97)":"transparent",borderBottom:scrolled?"1px solid #eee":"none",boxShadow:scrolled?"0 2px 20px rgba(0,0,0,.06)":"none",transition:"all .3s"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 32px",height:64}}>
-          <div style={{fontWeight:900,fontSize:17,letterSpacing:".05em",color: scrolled ? dark : "#fff",cursor:"pointer",transition:"color .3s"}}
-            onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>
-            10.31
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:4}}>
+          <div style={{fontWeight:900,fontSize:17,color:scrolled?dark:"#fff",cursor:"pointer",transition:"color .3s"}} onClick={()=>window.scrollTo({top:0,behavior:"smooth"})}>10.31</div>
+          <div style={{display:"flex",alignItems:"center",gap:4,flexWrap:"wrap"}}>
             {t.nav.map((n,i)=>(
-              <button key={i} className="nav-link"
-                style={{color: scrolled ? "#333" : "rgba(255,255,255,.85)"}}
-                onClick={()=>scrollTo(sections[i])}>{n}</button>
+              <button key={i} className="nav-link" style={{color:scrolled?"#333":"rgba(255,255,255,.85)"}} onClick={()=>scrollTo(sections[i])}>{n}</button>
             ))}
-            <button className={`lang-btn ${scrolled?"lang-btn-dark":""}`}
-              style={{marginLeft:12}} onClick={()=>setLang(l=>l==="ja"?"mn":"ja")}>
-              {t.lang_toggle}
-            </button>
+            <button className={`lang-btn ${scrolled?"lang-btn-dark":""}`} style={{marginLeft:12}} onClick={()=>setLang(l=>l==="ja"?"mn":"ja")}>{t.lang_toggle}</button>
           </div>
         </div>
       </header>
 
-      {/* ── HERO ── */}
-      <section style={{
-        minHeight:"100vh",
-        background:`linear-gradient(160deg,${dark} 0%,${mid} 55%,#1a3020 100%)`,
-        display:"flex",alignItems:"center",position:"relative",overflow:"hidden",
-        paddingTop:64
-      }}>
-        {/* subtle grid texture */}
-        <div style={{position:"absolute",inset:0,opacity:.04,
-          backgroundImage:`linear-gradient(${accent} 1px,transparent 1px),linear-gradient(90deg,${accent} 1px,transparent 1px)`,
-          backgroundSize:"80px 80px"}} />
-        {/* gold accent bar */}
+      {/* HERO */}
+      <section style={{minHeight:"100vh",background:`linear-gradient(160deg,${dark} 0%,${mid} 55%,#1a3020 100%)`,display:"flex",alignItems:"center",position:"relative",overflow:"hidden",paddingTop:64}}>
+        <div style={{position:"absolute",inset:0,opacity:.04,backgroundImage:`linear-gradient(${accent} 1px,transparent 1px),linear-gradient(90deg,${accent} 1px,transparent 1px)`,backgroundSize:"80px 80px"}} />
         <div style={{position:"absolute",top:0,left:0,width:3,height:"100%",background:`linear-gradient(to bottom,transparent,${accent},transparent)`}} />
-
         <div style={{maxWidth:1100,margin:"0 auto",padding:"80px 32px",position:"relative",zIndex:2}} className="fadein">
-          <div style={{fontSize:12,letterSpacing:".25em",color:accent,textTransform:"uppercase",marginBottom:28,fontWeight:600}}>
-            {t.hero_sub}
-          </div>
-          <h1 style={{
-            fontSize:"clamp(42px,7vw,88px)",
-            color:"#fff",fontWeight:900,
-            lineHeight:1.1,letterSpacing:"-.03em",
-            marginBottom:32,
-            whiteSpace:"pre-line"
-          }}>{t.hero_h1}</h1>
-          <p style={{color:"rgba(255,255,255,.65)",fontSize:16,maxWidth:520,marginBottom:48,lineHeight:1.85}}>
-            {t.hero_p}
-          </p>
+          <div style={{fontSize:12,letterSpacing:".25em",color:accent,textTransform:"uppercase",marginBottom:28,fontWeight:600}}>{t.hero_sub}</div>
+          <h1 style={{fontSize:"clamp(42px,7vw,88px)",color:"#fff",fontWeight:900,lineHeight:1.1,letterSpacing:"-.03em",marginBottom:32,whiteSpace:"pre-line"}}>{t.hero_h1}</h1>
+          <p style={{color:"rgba(255,255,255,.65)",fontSize:16,maxWidth:520,marginBottom:48,lineHeight:1.85}}>{t.hero_p}</p>
           <div className="hero-btns" style={{display:"flex",gap:16,flexWrap:"wrap"}}>
-            <button className="btn-primary" onClick={()=>scrollTo("contact")} style={{fontSize:15,padding:"16px 44px"}}>
-              {t.hero_cta}
-            </button>
-            <button className="btn-ghost" onClick={()=>scrollTo("plan")}>
-              {t.hero_sub2}
-            </button>
+            <button className="btn-primary" onClick={()=>scrollTo("contact")} style={{fontSize:15,padding:"16px 44px"}}>{t.hero_cta}</button>
+            <button className="btn-ghost" onClick={()=>scrollTo("plan")}>{t.hero_sub2}</button>
           </div>
         </div>
-
-        {/* big 10.31 watermark */}
-        <div style={{
-          position:"absolute",right:"-2%",bottom:"-5%",
-          fontSize:"clamp(120px,20vw,260px)",fontWeight:900,
-          color:"rgba(255,255,255,.03)",letterSpacing:"-.05em",
-          lineHeight:1,userSelect:"none",pointerEvents:"none"
-        }}>10.31</div>
+        <div style={{position:"absolute",right:"-2%",bottom:"-5%",fontSize:"clamp(120px,20vw,260px)",fontWeight:900,color:"rgba(255,255,255,.03)",letterSpacing:"-.05em",lineHeight:1,userSelect:"none"}}>10.31</div>
       </section>
 
-      {/* ── STATS ── */}
+      {/* STATS */}
       <section style={{background:accent,padding:"40px 32px"}}>
         <div className="stat-grid" style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:24}}>
           {t.stats.map((s,i)=>(
@@ -299,9 +262,9 @@ export default function Site1031() {
         </div>
       </section>
 
-      {/* ── ABOUT ── */}
+      {/* ABOUT */}
       <section style={{padding:"100px 32px",background:"#fff"}}>
-        <div style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1fr",gap:80,alignItems:"center"}}>
+        <div className="about-grid" style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1fr",gap:80,alignItems:"center"}}>
           <div>
             <div className="section-eyebrow">{t.about_label}</div>
             <h2 className="section-h2">{t.about_h2}</h2>
@@ -312,7 +275,7 @@ export default function Site1031() {
             <div style={{background:`linear-gradient(135deg,${dark},${mid})`,aspectRatio:"4/5",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden"}}>
               <div style={{fontSize:120,opacity:.08,fontWeight:900,color:"#fff",letterSpacing:"-.05em",lineHeight:1}}>10<br/>.31</div>
               <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"32px",background:"linear-gradient(transparent,rgba(0,0,0,.6))"}}>
-                <div style={{color:accent,fontSize:12,letterSpacing:".2em",marginBottom:6}}>EST. 2024.10.31</div>
+                <div style={{color:accent,fontSize:12,letterSpacing:".2em",marginBottom:6}}>EST. 2026.02.24</div>
                 <div style={{color:"#fff",fontWeight:700,fontSize:16}}>KOBE, JAPAN</div>
               </div>
             </div>
@@ -321,16 +284,49 @@ export default function Site1031() {
         </div>
       </section>
 
-      {/* ── SERVICES ── */}
-      <section id="service" style={{padding:"100px 32px",background:"#f8f8f6"}}>
+      {/* TRAINER */}
+      <section id="trainer" style={{padding:"100px 32px",background:"#f8f8f6"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}}>
+          <div className="section-eyebrow">{t.trainer_label}</div>
+          <h2 className="section-h2">{t.trainer_h2}</h2>
+          <div className="trainer-inner" style={{display:"flex",gap:48,alignItems:"center",background:"#fff",padding:"48px"}}>
+            {/* TRAINER PHOTO */}
+            <div style={{flexShrink:0,width:260,height:320,overflow:"hidden",position:"relative"}}>
+              <img
+                src="https://i.imgur.com/placeholder.jpg"
+                alt="BATTUR DASHNYAM"
+                style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top"}}
+                onError={e=>{
+                  e.target.style.display="none";
+                  e.target.nextSibling.style.display="flex";
+                }}
+              />
+              <div style={{display:"none",width:"100%",height:"100%",background:`linear-gradient(135deg,${dark},${mid})`,alignItems:"center",justifyContent:"center",fontSize:80,position:"absolute",top:0,left:0}}>💪</div>
+            </div>
+            <div style={{flex:1}}>
+              <div style={{fontWeight:900,fontSize:26,marginBottom:6,letterSpacing:"-.01em"}}>{t.trainer_name}</div>
+              <div style={{color:accent,fontSize:13,letterSpacing:".15em",marginBottom:24,textTransform:"uppercase"}}>{t.trainer_role}</div>
+              <p style={{color:"#555",fontSize:15,lineHeight:2,marginBottom:28}}>{t.trainer_msg}</p>
+              <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                {["パーソナルトレーナー","栄養指導","体組成分析"].map((tag,i)=>(
+                  <span key={i} style={{fontSize:12,padding:"6px 16px",border:`1px solid ${accent}`,color:accent,letterSpacing:".05em"}}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES */}
+      <section id="service" style={{padding:"100px 32px",background:"#fff"}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div className="section-eyebrow">{t.service_label}</div>
           <h2 className="section-h2">{t.service_h2}</h2>
           <div className="service-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:2}}>
             {t.services.map((s,i)=>(
-              <div key={i} style={{background:"#fff",padding:"40px 36px",borderLeft:`3px solid ${i===0||i===2?accent:"transparent"}`}}>
-                <div style={{fontSize:22,color:accent,marginBottom:20,fontWeight:300}}>{s.icon}</div>
-                <h3 style={{fontWeight:900,fontSize:18,marginBottom:12,letterSpacing:"-.01em"}}>{s.title}</h3>
+              <div key={i} style={{background:"#f8f8f6",padding:"40px 36px",borderLeft:`3px solid ${i===0||i===2?accent:"transparent"}`}}>
+                <div style={{fontSize:22,color:accent,marginBottom:20}}>{s.icon}</div>
+                <h3 style={{fontWeight:900,fontSize:18,marginBottom:12}}>{s.title}</h3>
                 <p style={{color:"#666",fontSize:14,lineHeight:1.9}}>{s.desc}</p>
               </div>
             ))}
@@ -338,101 +334,52 @@ export default function Site1031() {
         </div>
       </section>
 
-      {/* ── TRAINER ── */}
-      <section id="trainer" style={{padding:"100px 32px",background:"#fff"}}>
-        <div style={{maxWidth:1100,margin:"0 auto"}}>
-          <div className="section-eyebrow">Trainer</div>
-          <h2 className="section-h2">{lang==="ja"?"トレーナー紹介":"Дасгалжуулагчийн танилцуулга"}</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:32}}>
-            {[
-              {
-                name: lang==="ja" ? "代表トレーナー" : "Үндсэн дасгалжуулагч",
-                role: lang==="ja" ? "NSCA認定パーソナルトレーナー" : "NSCA гэрчилгээтэй хувийн дасгалжуулагч",
-                exp: lang==="ja" ? "指導歴 8年+" : "8+ жилийн туршлага",
-                msg: lang==="ja"
-                  ? "お客様の努力が必ず結果につながるよう、科学的根拠に基づいたトレーニングを提供します。初めての方も安心してご相談ください。"
-                  : "Үйлчлүүлэгчдийн хичээл зүтгэл заавал үр дүн гарахад хүргэх зорилгоор шинжлэх ухааны үндэстэй сургалт хийдэг. Анх удаа ирж буй хүмүүс ч тайвнаар асуугаарай.",
-                icon:"🏋️‍♂️"
-              }
-            ].map((tr,i)=>(
-              <div key={i} style={{display:"flex",gap:28,alignItems:"flex-start",padding:"40px",background:"#f8f8f6"}}>
-                <div style={{width:80,height:80,background:`linear-gradient(135deg,${dark},${mid})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,flexShrink:0}}>{tr.icon}</div>
-                <div>
-                  <div style={{fontWeight:900,fontSize:18,marginBottom:4}}>{tr.name}</div>
-                  <div style={{color:accent,fontSize:12,letterSpacing:".1em",marginBottom:4}}>{tr.role}</div>
-                  <div style={{color:"#999",fontSize:12,marginBottom:16}}>{tr.exp}</div>
-                  <p style={{color:"#555",fontSize:14,lineHeight:1.9}}>{tr.msg}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── PLAN ── */}
+      {/* PLAN */}
       <section id="plan" style={{padding:"100px 32px",background:dark}}>
         <div style={{maxWidth:1100,margin:"0 auto"}}>
           <div className="section-eyebrow">{t.plan_label}</div>
           <h2 className="section-h2" style={{color:"#fff"}}>{t.plan_h2}</h2>
           <div style={{background:"rgba(200,169,110,.15)",border:`1px solid ${accent}`,padding:"14px 24px",display:"inline-block",marginBottom:48}}>
-            <span style={{color:accent,fontSize:13,letterSpacing:".05em"}}>🎉 {t.plan_note}</span>
+            <span style={{color:accent,fontSize:13}}>🎉 {t.plan_note}</span>
           </div>
-          <div className="plan-grid" style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:24,marginBottom:64}}>
+          <div className="plan-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:20,marginBottom:48}}>
             {t.plans.map((p,i)=>(
-              <div key={i} className={`plan-card ${i===1?"featured":""}`} style={{background: i===1?"#fff":"rgba(255,255,255,.04)",borderColor: i===1?accent:"rgba(255,255,255,.1)"}}>
-                {p.tag && <div style={{position:"absolute",top:-14,left:"50%",transform:"translateX(-50%)",background:accent,color:"#fff",fontSize:11,fontWeight:900,padding:"4px 18px",whiteSpace:"nowrap",letterSpacing:".1em"}}>{p.tag}</div>}
-                <div style={{fontSize:20,fontWeight:900,marginBottom:8,color: i===1?"#1a1a1a":"#fff"}}>{p.name}</div>
-                <div style={{fontSize:13,color: i===1?"#888":"rgba(255,255,255,.5)",marginBottom:28}}>{p.sessions}</div>
-                <div style={{fontSize:40,fontWeight:900,color: i===1?"#1a1a1a":"#fff",letterSpacing:"-.03em",marginBottom:4}}>{p.price}</div>
-                <div style={{fontSize:12,color: i===1?"#aaa":"rgba(255,255,255,.4)",marginBottom:32}}>{p.tax}</div>
-                <button className="btn-primary" onClick={()=>scrollTo("contact")} style={{width:"100%",padding:"13px",fontSize:13}}>
-                  {lang==="ja"?"このプランで申し込む":"Энэ хөтөлбөрөөр захиалах"}
+              <div key={i} className={`plan-card ${i===2?"featured":""}`} style={{background:i===2?"#fff":"rgba(255,255,255,.04)",borderColor:i===2?accent:"rgba(255,255,255,.1)"}}>
+                {p.tag&&<div style={{position:"absolute",top:-14,left:"50%",transform:"translateX(-50%)",background:accent,color:"#fff",fontSize:11,fontWeight:900,padding:"4px 14px",whiteSpace:"nowrap"}}>{p.tag}</div>}
+                <div style={{fontSize:16,fontWeight:900,marginBottom:8,color:i===2?"#1a1a1a":"#fff"}}>{p.name}</div>
+                <div style={{fontSize:12,color:i===2?"#888":"rgba(255,255,255,.5)",marginBottom:20}}>{p.sessions}</div>
+                <div style={{fontSize:32,fontWeight:900,color:i===2?"#1a1a1a":accent,marginBottom:4}}>{p.price}</div>
+                <div style={{fontSize:12,color:i===2?"#aaa":"rgba(255,255,255,.4)",marginBottom:24}}>{p.tax}</div>
+                <button className="btn-primary" onClick={()=>scrollTo("contact")} style={{width:"100%",padding:"12px",fontSize:12}}>
+                  {lang==="ja"?"申し込む":"Захиалах"}
                 </button>
               </div>
             ))}
           </div>
-
-          {/* campaign */}
-          <div style={{border:`1px solid rgba(200,169,110,.3)`,padding:"40px",textAlign:"center"}}>
-            <div style={{fontSize:12,letterSpacing:".2em",color:accent,marginBottom:16,textTransform:"uppercase"}}>{t.campaign_title}</div>
-            <div style={{display:"flex",justifyContent:"center",gap:48,flexWrap:"wrap"}}>
-              {t.campaign_items.map((c,i)=>(
-                <div key={i} style={{textAlign:"center"}}>
-                  <div style={{color:"rgba(255,255,255,.5)",fontSize:12,marginBottom:4}}>0{i+1}</div>
-                  <div style={{color:"#fff",fontWeight:700,fontSize:15}}>{c}</div>
-                </div>
-              ))}
-            </div>
-            <button className="btn-primary" onClick={()=>scrollTo("contact")} style={{marginTop:32,fontSize:14,padding:"14px 48px"}}>
-              {lang==="ja"?"無料体験を申し込む":"Үнэгүй туршилт захиалах"}
-            </button>
-          </div>
         </div>
       </section>
 
-      {/* ── FLOW ── */}
+      {/* FLOW */}
       <section style={{padding:"100px 32px",background:"#fff"}}>
         <div style={{maxWidth:800,margin:"0 auto"}}>
           <div className="section-eyebrow">{t.flow_label}</div>
           <h2 className="section-h2">{t.flow_h2}</h2>
-          <div style={{display:"flex",flexDirection:"column",gap:0}}>
-            {t.flows.map((f,i)=>(
-              <div key={i} style={{display:"flex",gap:28,position:"relative"}}>
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
-                  <div className="step-dot">{i+1}</div>
-                  {i<t.flows.length-1 && <div style={{width:1,flex:1,background:"#eee",margin:"8px 0"}} />}
-                </div>
-                <div style={{paddingBottom: i<t.flows.length-1?40:0,paddingTop:10}}>
-                  <div style={{fontWeight:900,fontSize:16,marginBottom:6}}>{f.title}</div>
-                  <div style={{color:"#666",fontSize:14,lineHeight:1.9}}>{f.desc}</div>
-                </div>
+          {t.flows.map((f,i)=>(
+            <div key={i} style={{display:"flex",gap:28,position:"relative"}}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
+                <div className="step-dot">{i+1}</div>
+                {i<t.flows.length-1&&<div style={{width:1,flex:1,background:"#eee",margin:"8px 0"}} />}
               </div>
-            ))}
-          </div>
+              <div style={{paddingBottom:i<t.flows.length-1?40:0,paddingTop:10}}>
+                <div style={{fontWeight:900,fontSize:16,marginBottom:6}}>{f.title}</div>
+                <div style={{color:"#666",fontSize:14,lineHeight:1.9}}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ── ACCESS ── */}
+      {/* ACCESS */}
       <section id="access" style={{padding:"100px 32px",background:"#f8f8f6"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1fr",gap:80,alignItems:"start"}}>
           <div>
@@ -454,7 +401,7 @@ export default function Site1031() {
               ))}
             </div>
           </div>
-          <div style={{background:`linear-gradient(135deg,${dark},${mid})`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.3)",fontSize:15,letterSpacing:".1em",flexDirection:"column",gap:12}}>
+          <div style={{background:`linear-gradient(135deg,${dark},${mid})`,aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.3)",fontSize:15,flexDirection:"column",gap:12}}>
             <div style={{fontSize:32}}>📍</div>
             <div style={{textAlign:"center",lineHeight:1.8,fontSize:13}}>
               {lang==="ja"?"神戸市中央区多聞通4丁目\n岡田ビル2F":"Кобе хот, Чуо-ку\nОкада билдинг 2 давхар"}
@@ -464,27 +411,46 @@ export default function Site1031() {
         </div>
       </section>
 
-      {/* ── CONTACT ── */}
+      {/* CONTACT */}
       <section id="contact" style={{padding:"100px 32px",background:"#fff"}}>
-        <div style={{maxWidth:640,margin:"0 auto"}}>
+        <div style={{maxWidth:700,margin:"0 auto"}}>
           <div className="section-eyebrow">{t.contact_label}</div>
           <h2 className="section-h2">{t.contact_h2}</h2>
           <p style={{color:"#666",marginBottom:48,fontSize:15}}>{t.contact_p}</p>
 
-          {/* LINE / TEL */}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:40}}>
-            <div style={{background:"#06C755",padding:"18px",textAlign:"center",cursor:"pointer"}}>
-              <div style={{color:"#fff",fontWeight:900,fontSize:14}}>💬 LINE</div>
-              <div style={{color:"rgba(255,255,255,.7)",fontSize:12,marginTop:4}}>
-                {lang==="ja"?"公式LINEで問い合わせ":"Оффициал LINE-ээр хандах"}
-              </div>
+          {/* SNS / QR */}
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:40}}>
+            {/* LINE */}
+            <div className="qr-card">
+              <div style={{background:"#06C755",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>LINE</div>
+              <img src="/line-qr.png" alt="LINE QR" className="qr-img"
+                onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="block";}}
+              />
+              <div style={{display:"none",width:140,height:140,background:"#f0f0f0",display:"flex",alignItems:"center",justifyContent:"center",color:"#999",fontSize:12}}>LINE QR</div>
+              <div style={{fontSize:12,color:"#888"}}>LINEで相談する</div>
             </div>
-            <div style={{background:dark,padding:"18px",textAlign:"center",cursor:"pointer"}}>
-              <div style={{color:"#fff",fontWeight:900,fontSize:14}}>📞 078-XXX-XXXX</div>
-              <div style={{color:"rgba(255,255,255,.5)",fontSize:12,marginTop:4}}>
-                {lang==="ja"?"電話でお問い合わせ":"Утсаар холбоо барих"}
-              </div>
+            {/* Instagram */}
+            <div className="qr-card">
+              <div style={{background:"linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>Instagram</div>
+              <img src="/instagram-qr.png" alt="Instagram QR" className="qr-img"
+                onError={e=>{e.target.style.display="none";}}
+              />
+              <div style={{fontSize:12,color:"#888"}}>@THE_10.31_PERSONAL_GYM</div>
             </div>
+            {/* TikTok */}
+            <div className="qr-card">
+              <div style={{background:"#000",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>TikTok</div>
+              <img src="/tiktok-qr.png" alt="TikTok QR" className="qr-img"
+                onError={e=>{e.target.style.display="none";}}
+              />
+              <div style={{fontSize:12,color:"#888"}}>TikTokをフォロー</div>
+            </div>
+          </div>
+
+          {/* TEL */}
+          <div style={{background:dark,padding:"20px 32px",textAlign:"center",marginBottom:40,cursor:"pointer"}} onClick={()=>window.location.href="tel:09087389899"}>
+            <div style={{color:"#fff",fontWeight:900,fontSize:18}}>📞 090-8738-9899</div>
+            <div style={{color:"rgba(255,255,255,.5)",fontSize:13,marginTop:4}}>{lang==="ja"?"電話でお問い合わせ":"Утсаар холбоо барих"}</div>
           </div>
 
           {sent?(
@@ -508,14 +474,14 @@ export default function Site1031() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* FOOTER */}
       <footer style={{background:dark,padding:"48px 32px"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:24}}>
           <div>
             <div style={{fontWeight:900,fontSize:20,color:"#fff",letterSpacing:".05em",marginBottom:6}}>10.31</div>
             <div style={{color:"rgba(255,255,255,.35)",fontSize:12}}>合同会社</div>
           </div>
-          <div style={{color:"rgba(255,255,255,.35)",fontSize:12}}>{t.footer_copy}</div>
+          <div style={{color:"rgba(255,255,255,.35)",fontSize:12}}>{t.footer_copy||"© 2026 10.31 合同会社 All rights reserved."}</div>
         </div>
       </footer>
     </div>
