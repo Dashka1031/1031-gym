@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import trainerImg from "/trainer.jpg";
+import lineQr from "/line-qr.png";
+import tiktokQr from "/tiktok-qr.png";
+import instagramQr from "/instagram-qr.png";
 
 const T = {
   ja: {
@@ -293,15 +297,10 @@ export default function Site1031() {
             {/* TRAINER PHOTO */}
             <div style={{flexShrink:0,width:260,height:320,overflow:"hidden",position:"relative"}}>
               <img
-                src="https://i.imgur.com/placeholder.jpg"
+                src={trainerImg}
                 alt="BATTUR DASHNYAM"
                 style={{width:"100%",height:"100%",objectFit:"cover",objectPosition:"top"}}
-                onError={e=>{
-                  e.target.style.display="none";
-                  e.target.nextSibling.style.display="flex";
-                }}
               />
-              <div style={{display:"none",width:"100%",height:"100%",background:`linear-gradient(135deg,${dark},${mid})`,alignItems:"center",justifyContent:"center",fontSize:80,position:"absolute",top:0,left:0}}>💪</div>
             </div>
             <div style={{flex:1}}>
               <div style={{fontWeight:900,fontSize:26,marginBottom:6,letterSpacing:"-.01em"}}>{t.trainer_name}</div>
@@ -423,26 +422,19 @@ export default function Site1031() {
             {/* LINE */}
             <div className="qr-card">
               <div style={{background:"#06C755",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>LINE</div>
-              <img src="/line-qr.png" alt="LINE QR" className="qr-img"
-                onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="block";}}
-              />
-              <div style={{display:"none",width:140,height:140,background:"#f0f0f0",display:"flex",alignItems:"center",justifyContent:"center",color:"#999",fontSize:12}}>LINE QR</div>
+              <img src={lineQr} alt="LINE QR" className="qr-img" />
               <div style={{fontSize:12,color:"#888"}}>LINEで相談する</div>
             </div>
             {/* Instagram */}
             <div className="qr-card">
               <div style={{background:"linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>Instagram</div>
-              <img src="/instagram-qr.png" alt="Instagram QR" className="qr-img"
-                onError={e=>{e.target.style.display="none";}}
-              />
+              <img src={instagramQr} alt="Instagram QR" className="qr-img" />
               <div style={{fontSize:12,color:"#888"}}>@THE_10.31_PERSONAL_GYM</div>
             </div>
             {/* TikTok */}
             <div className="qr-card">
               <div style={{background:"#000",color:"#fff",fontWeight:900,fontSize:13,padding:"6px 16px",width:"100%",textAlign:"center"}}>TikTok</div>
-              <img src="/tiktok-qr.png" alt="TikTok QR" className="qr-img"
-                onError={e=>{e.target.style.display="none";}}
-              />
+              <img src={tiktokQr} alt="TikTok QR" className="qr-img" />
               <div style={{fontSize:12,color:"#888"}}>TikTokをフォロー</div>
             </div>
           </div>
