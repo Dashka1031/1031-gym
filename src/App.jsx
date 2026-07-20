@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import trainerImg from "./assets/trainer.jpg";
-import lineQr from "./assets/line-qr.png";
-import tiktokQr from "./assets/tiktok-qr.png";
-import instagramQr from "./assets/instagram-qr.png";
+const trainerImg = "/trainer.jpg";
+const lineQr = "/line-qr.png";
+const tiktokQr = "/tiktok-qr.png";
+const instagramQr = "/instagram-qr.png";
 
 const T = {
   ja: {
